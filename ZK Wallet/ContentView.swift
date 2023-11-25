@@ -16,40 +16,42 @@ struct ContentView: View {
             AppTabView()
         } else {
             VStack {
-                Spacer()
-                
-                Image(systemName: "wallet.pass.fill")
-                    .imageScale(.large)
+                Image("ZKW-Logo")
+                    .resizable()
+                    .scaledToFit()
                     .foregroundStyle(.tint)
-                Text("ZK Wallet")
-                Spacer()
-                
+
                 ProgressView(value: progress)
                     .progressViewStyle(LinearProgressViewStyle())
                     .frame(maxWidth: .infinity)
             }
             .padding()
             .onAppear {
-                // First phase: Move to half in 1 second
-                withAnimation(.linear(duration: 1)) {
-                    progress = 0.5
-                }
-                
-                // Second phase: Wait for 1 seconds
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    // No change in progress, just wait
-                }
-                
-                // Third phase: Move to end in the last 1 seconds
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                // Initial wait with no progress change
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    // First phase: Move to 35% in 2 seconds
                     withAnimation(.linear(duration: 1)) {
-                        progress = 1.0
+                        progress = 0.35
                     }
-                }
 
-                // Finally, after 2 seconds, change the view
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    isLoadingComplete = true
+                    // Second phase: Wait for 2 seconds, then move to 80%
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        withAnimation(.linear(duration: 1)) {
+                            progress = 0.80
+                        }
+
+                        // Third phase: Wait for 1 second, then move to 100%
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            withAnimation(.linear(duration: 1)) {
+                                progress = 1.0
+                            }
+
+                            // Finally, after 2 more seconds, change the view
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                isLoadingComplete = true
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -59,4 +61,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
