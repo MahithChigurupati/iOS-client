@@ -7,7 +7,10 @@
 
 import Foundation
 
-struct OrganizationModel: Identifiable {
-    let id: Int
+struct OrganizationModel: Decodable, Identifiable {
+    var id: Int
     var name: String
+    var code: String
+    var stateId: Int
+
 }
