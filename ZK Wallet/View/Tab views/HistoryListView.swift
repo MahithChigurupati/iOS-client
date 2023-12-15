@@ -8,25 +8,29 @@
 import SwiftUI
 
 struct HistoryListView: View {
-    // Sample data structure for transaction history
-    let transactionHistory = [
-        Transaction(companyName: "Company A", date: "23 Nov 2023", amount: "$200.00", companyImage: "building"),
-        Transaction(companyName: "Company B", date: "22 Nov 2023", amount: "$150.50", companyImage: "house"),
-        Transaction(companyName: "Company C", date: "21 Nov 2023", amount: "$300.75", companyImage: "leaf"),
-    ]
+    @State private var transactionHistory: [Transaction] = []
 
     var body: some View {
         NavigationView {
-            List(transactionHistory, id: \.self) { transaction in
+            List(transactionHistory, id: \.txId) { transaction in
                 NavigationLink(destination: DetailedHistoryView(transaction: transaction)) {
                     HistoryCell(transaction: transaction)
                 }
             }
             .navigationTitle("Proof History")
+            .onAppear(perform: loadTransactions)
         }
     }
+
+    private func loadTransactions() {
+        let dbManager = DatabaseManager()
+        transactionHistory = dbManager.getTransactions()
+    }
 }
+
 
 #Preview {
     HistoryListView()
 }
+
+

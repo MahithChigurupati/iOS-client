@@ -11,8 +11,4 @@ struct StateModel: Decodable, Identifiable {
     var id: Int
     var name: String
     var code: String
-
 }
-
-
-

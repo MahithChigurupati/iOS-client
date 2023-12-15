@@ -26,13 +26,17 @@ struct ExpandedCardView: View {
             }
 
             List {
-                Text("Transaction 1")
-                Text("Transaction 2")
+                Text("Are you above 18?")
+                Text("Are you above 21?")
+                Text("is your credit score > 750?")
             }
         }
     }
 }
 
 #Preview {
-    ExpandedCardView(card: CardModel(cardType: "Social Security", cardNumber: "1234 5678 9101 1121", symbolName: "building.columns.fill", gradientColors: [Color.red, Color.orange]), isCardExpanded: .constant(false))
+    ExpandedCardView(
+        card: CardModel(from: IdModel(address: "123 Main St", idType: "SSA", firstName: "John", lastName: "Doe", dateOfBirth: 1, phone: "123-456-7890", UID: "1234567890")), isCardExpanded: .constant(true)
+        )
+            
 }

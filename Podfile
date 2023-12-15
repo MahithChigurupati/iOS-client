@@ -8,5 +8,6 @@ target 'ZK Wallet' do
   # Pods for ZK Wallet
 	pod 'Firebase/Core'
 	pod 'Firebase/Messaging'
+	pod 'SQLite.swift', '~> 0.14.0'
 
 end

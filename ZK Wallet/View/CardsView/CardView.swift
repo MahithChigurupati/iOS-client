@@ -10,13 +10,13 @@ import SwiftUI
 struct CardView: View {
     var cardType: String
     var cardNumber: String
-    var companySymbol: Image // Pass the company's logo as an Image
-    var gradientColors: [Color] // Array of Colors for the Gradient
+    var companySymbol: Image
+    var gradientColors: [Color]
 
     var maskedCardNumber: String {
-        // Mask all but the last 4 digits
+        
         guard cardNumber.count > 4 else {
-            return cardNumber // If the card number is too short, return as is.
+            return cardNumber 
         }
         return "*** ** " + cardNumber.suffix(4)
     }

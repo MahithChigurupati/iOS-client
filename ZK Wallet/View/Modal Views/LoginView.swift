@@ -49,7 +49,7 @@ struct LoginView: View {
 
                 Button("Get OTP") {
                     if isValidPhoneNumber(phoneNumber) {
-                        APIManager().sendOTPRequest(phoneNumber: phoneNumber) { success in
+                        APIManager().sendOTPRequest(phoneNumber: phoneNumber, id_type: organization.code) { success in
                             if success {
                                 otpSent = true
                             } else {
@@ -70,7 +70,7 @@ struct LoginView: View {
                     Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
 
-                NavigationLink(destination: OTPView(phoneNumber: phoneNumber), isActive: $otpSent) {
+                NavigationLink(destination: OTPView(phoneNumber: phoneNumber, organization: organization), isActive: $otpSent) {
                     EmptyView()
                 }
                 .hidden()

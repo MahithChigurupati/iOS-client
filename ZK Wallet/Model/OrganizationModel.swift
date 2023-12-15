@@ -12,5 +12,4 @@ struct OrganizationModel: Decodable, Identifiable {
     var name: String
     var code: String
     var stateId: Int
-
 }

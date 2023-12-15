@@ -5,9 +5,9 @@
 //  Created by Mahith ‎ on 11/24/23.
 //
 
-import UIKit
 import Firebase
 import SwiftUI
+import UIKit
 import UserNotifications
 
 @main
@@ -39,46 +39,40 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         )
 
         application.registerForRemoteNotifications()
-        
+
         // Send device token to localhost server
         sendDeviceTokenToServer()
 
         return true
     }
-    
+
     private func sendDeviceTokenToServer() {
         guard let fcmToken = Messaging.messaging().fcmToken else {
             print("FCM token is not available yet.")
             return
         }
 
-        let url = URL(string: "http://localhost:8080/token")!
+        let url = URL(string: "https://89a4-2601-19b-580-6c20-bdc9-6898-c331-e432.ngrok-free.app/token")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        // Update here with your email address and wallet address
         let emailAddress = "sai@test.com"
-        let walletAddress = "0x"
+        let walletAddress = "0x03fcDbb718cDDb25ab4c07D77e1511c5bbF5D126"
 
         let body: [String: Any] = [
             "emailAddress": emailAddress,
             "token": fcmToken,
-            "walletAddress": walletAddress
+            "walletAddress": walletAddress,
         ]
-        
-        print(body)
-        
+
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { _, _, error in
             if let error = error {
                 print("Error sending token to server: \(error)")
                 return
             }
-            // Handle response here
-            
-            print("token sent")
         }
 
         task.resume()
@@ -90,9 +84,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         if let messageID = userInfo[gcmMessageIDKey] {
             print("Message ID: \(messageID)")
         }
-
-        // Print full message.
-        print(userInfo)
 
         return UIBackgroundFetchResult.newData
     }
@@ -118,10 +109,35 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
 
+        if let dataPayload = userInfo["body"] as? String {
+            handleDataPayload(dataPayload)
+        }
+
         Messaging.messaging().appDidReceiveMessage(userInfo)
 
         // Change this to your preferred presentation option
         completionHandler([[.banner, .badge, .sound]])
+    }
+
+    private func handleDataPayload(_ dataPayload: String) {
+        print("Parsing JSON from data payload")
+        if let data = dataPayload.data(using: .utf8),
+           let jsonData = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+            print(jsonData)
+            if let from = jsonData["from"] as? String,
+               let message = jsonData["message"] as? String,
+               let txType = jsonData["txType"] as? String,
+               let txId = jsonData["txId"] as? String {
+                let transaction = Transaction(txId: txId, from: from, message: message, timestamp: nil, txType: txType)
+                // Insert the transaction into the database
+                let dbManager = DatabaseManager()
+                dbManager.insertTransaction(transaction: transaction)
+            } else {
+                print("Error: Missing keys in data payload")
+            }
+        } else {
+            print("Error: Unable to parse JSON from data payload")
+        }
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -130,8 +146,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
 
         Messaging.messaging().appDidReceiveMessage(userInfo)
-
-        print(userInfo)
 
         completionHandler()
     }
@@ -142,5 +156,3 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     }
 }
-
-

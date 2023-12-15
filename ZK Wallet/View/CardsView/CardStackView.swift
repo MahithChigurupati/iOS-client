@@ -14,12 +14,12 @@ struct CardStackView: View {
 
     var body: some View {
         ZStack {
-            ForEach(cards.indices, id: \.self) { index in
+            ForEach(Array(cards.enumerated()), id: \.offset) { index, card in
                 CardView(
-                    cardType: cards[index].cardType,
-                    cardNumber: cards[index].cardNumber,
-                    companySymbol: Image(systemName: cards[index].symbolName),
-                    gradientColors: cards[index].gradientColors
+                    cardType: card.cardType,
+                    cardNumber: card.cardNumber,
+                    companySymbol: Image(systemName: card.symbolName),
+                    gradientColors: card.gradientColors
                 )
                 .offset(x: 0, y: CGFloat(index * 30))
                 .onTapGesture {
@@ -34,9 +34,15 @@ struct CardStackView: View {
 }
 
 #Preview {
-    CardStackView(cards: .constant([
-        CardModel(cardType: "Social Security", cardNumber: "1234 5678 9101 1121", symbolName: "building.columns.fill", gradientColors: [Color.red, Color.orange]),
-        CardModel(cardType: "Passport", cardNumber: "2345 6789 0123 4567", symbolName: "building.columns.fill", gradientColors: [Color.green, Color.blue]),
+    CardStackView(
+        cards: .constant([
+            CardModel(from: IdModel(address: "123 Main St", idType: "UID", firstName: "John", lastName: "Doe", dateOfBirth: 1, phone: "123-456-7890", UID: "1234567890")),
+            CardModel(from: IdModel(address: "456 Elm St", idType: "Passport", firstName: "Jane", lastName: "Smith", dateOfBirth: 1, phone: "098-765-4321", UID: "0987654321")),
+            CardModel(from: IdModel(address: "456 Elm St", idType: "SSA", firstName: "Jane", lastName: "Smith", dateOfBirth: 1, phone: "098-765-4321", UID: "0987654321"))
+        ]),
+        selectedCardIndex: .constant(nil),
+        isCardExpanded: .constant(false)
+    )
 
-    ]), selectedCardIndex: .constant(nil), isCardExpanded: .constant(false))
 }
+
