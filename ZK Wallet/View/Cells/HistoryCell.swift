@@ -12,23 +12,24 @@ struct HistoryCell: View {
 
     var body: some View {
         HStack {
-            Image(systemName: transaction.companyImage)
+            
+            Image(systemName: "building.2.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 50, height: 50)
                 .padding(.trailing, 10)
 
             VStack(alignment: .leading) {
-                Text(transaction.companyName)
+                Text(transaction.from)
                     .font(.headline)
-                Text(transaction.date)
+                Text(formatDate(transaction.timestamp!))
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }
 
             Spacer()
 
-            Text(transaction.amount)
+            Text(transaction.message)
                 .font(.title3)
                 .fontWeight(.bold)
         }
@@ -38,6 +39,6 @@ struct HistoryCell: View {
 
 #Preview {
     HistoryCell(
-        transaction: Transaction(companyName: "Company A", date: "23 Nov 2023", amount: "$200.00", companyImage: "building")
+        transaction: Transaction(txId: "1", from: "JVUE", message: "Are you above 18?", timestamp: "2023-12-10T11:46:21-05:00", txType: "18")
     )
 }

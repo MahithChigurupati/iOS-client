@@ -7,28 +7,8 @@
 
 import Foundation
 
-class StateModel: Identifiable {
-    public var id: Int
-    public var stateName: String
-    public var stateCode: String
-    public var countryName: String
-
-    init(id: Int, stateName: String, stateCode: String, countryName: String) {
-        self.id = id
-        self.stateName = stateName
-        self.stateCode = stateCode
-        self.countryName = countryName
-    }
+struct StateModel: Decodable, Identifiable {
+    var id: Int
+    var name: String
+    var code: String
 }
-
-extension StateModel {
-    static var sampleData: [StateModel] {
-        [
-            StateModel(id: 1, stateName: "California", stateCode: "CA", countryName: "USA"),
-            StateModel(id: 2, stateName: "New York", stateCode: "NY", countryName: "USA"),
-            StateModel(id: 3, stateName: "Texas", stateCode: "TX", countryName: "USA"),
-            // Add more sample states as needed
-        ]
-    }
-}
-
